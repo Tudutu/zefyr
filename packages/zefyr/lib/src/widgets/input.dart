@@ -158,6 +158,9 @@ class InputConnectionController implements TextInputClient {
     }
   }
 
+  // Fix for issue https://github.com/memspace/zefyr/issues/281
+  @override TextEditingValue get currentTextEditingValue => _lastKnownRemoteTextEditingValue;
+
   //
   // Private members
   //
