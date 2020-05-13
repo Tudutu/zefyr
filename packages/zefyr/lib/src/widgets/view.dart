@@ -19,8 +19,10 @@ import 'theme.dart';
 class ZefyrView extends StatefulWidget {
   final NotusDocument document;
   final ZefyrImageDelegate imageDelegate;
+  final int maxLines;
 
-  const ZefyrView({Key key, @required this.document, this.imageDelegate})
+  const ZefyrView(
+      {Key key, @required this.document, this.imageDelegate, this.maxLines})
       : super(key: key);
 
   @override
@@ -77,7 +79,11 @@ class ZefyrViewState extends State<ZefyrView> {
 
   List<Widget> _buildChildren(BuildContext context) {
     final result = <Widget>[];
-    for (var node in widget.document.root.children) {
+    final docRoot = widget.document.root;
+    final nodes = widget.maxLines != null
+        ? docRoot.children.take(widget.maxLines)
+        : docRoot.children;
+    for (var node in nodes) {
       result.add(_defaultChildBuilder(context, node));
     }
     return result;
