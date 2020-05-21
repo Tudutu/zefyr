@@ -158,16 +158,9 @@ class InputConnectionController implements TextInputClient {
     }
   }
 
-  // Fix for issue https://github.com/memspace/zefyr/issues/281
-  @override TextEditingValue get currentTextEditingValue => _lastKnownRemoteTextEditingValue;
-
-  //
-  // Private members
-  //
-
-  final List<TextEditingValue> _sentRemoteValues = [];
-  TextInputConnection _textInputConnection;
-  TextEditingValue _lastKnownRemoteTextEditingValue;
+  @override
+  TextEditingValue get currentTextEditingValue =>
+      _lastKnownRemoteTextEditingValue;
 
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
@@ -183,4 +176,12 @@ class InputConnectionController implements TextInputClient {
       _sentRemoteValues.clear();
     }
   }
+
+  //
+  // Private members
+  //
+
+  final List<TextEditingValue> _sentRemoteValues = [];
+  TextInputConnection _textInputConnection;
+  TextEditingValue _lastKnownRemoteTextEditingValue;
 }
