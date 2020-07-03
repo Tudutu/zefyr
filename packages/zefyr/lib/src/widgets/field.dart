@@ -20,6 +20,7 @@ class ZefyrField extends StatefulWidget {
   final ZefyrToolbarDelegate toolbarDelegate;
   final ZefyrImageDelegate imageDelegate;
   final ScrollPhysics physics;
+  final EdgeInsets padding;
 
   /// The appearance of the keyboard.
   ///
@@ -40,7 +41,9 @@ class ZefyrField extends StatefulWidget {
     this.imageDelegate,
     this.physics,
     this.keyboardAppearance,
-  }) : super(key: key);
+    this.padding = const EdgeInsets.symmetric(vertical: 6.0),
+  })  : assert(padding != null),
+        super(key: key);
 
   @override
   _ZefyrFieldState createState() => _ZefyrFieldState();
@@ -51,7 +54,7 @@ class _ZefyrFieldState extends State<ZefyrField> {
   @override
   Widget build(BuildContext context) {
     Widget child = ZefyrEditor(
-      padding: EdgeInsets.symmetric(vertical: 6.0),
+      padding: widget.padding,
       controller: widget.controller,
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
