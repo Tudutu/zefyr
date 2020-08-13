@@ -4,6 +4,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -39,6 +40,9 @@ class _ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
   TextSelectionControls _controls;
   TextSelectionControls get controls => _controls;
 
+  final ClipboardStatusNotifier _clipboardStatus =
+      kIsWeb ? null : ClipboardStatusNotifier();
+
   /// Global position of last TapDown event.
   Offset _lastTapDownPosition;
 
@@ -72,7 +76,10 @@ class _ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
     _toolbar = OverlayEntry(
       builder: (context) => FadeTransition(
         opacity: toolbarOpacity,
-        child: _SelectionToolbar(selectionOverlay: this),
+        child: _SelectionToolbar(
+          selectionOverlay: this, 
+          clipboardStatus: _clipboardStatus,
+        ),
       ),
     );
     _overlay.insert(_toolbar);
@@ -536,9 +543,12 @@ class _SelectionToolbar extends StatefulWidget {
   const _SelectionToolbar({
     Key key,
     @required this.selectionOverlay,
+    @required this.clipboardStatus,
   }) : super(key: key);
 
   final _ZefyrSelectionOverlayState selectionOverlay;
+
+  final ClipboardStatusNotifier clipboardStatus;
 
   @override
   _SelectionToolbarState createState() => _SelectionToolbarState();
@@ -597,7 +607,8 @@ class _SelectionToolbarState extends State<_SelectionToolbar> {
         block.preferredLineHeight,
         midpoint,
         endpoints,
-        widget.selectionOverlay);
+        widget.selectionOverlay,
+        widget.clipboardStatus);
     return CompositedTransformFollower(
       link: block.layerLink,
       showWhenUnlinked: false,
