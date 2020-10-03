@@ -239,7 +239,7 @@ class RenderEditableProxyBox extends RenderBox
   bool hitTestSelf(Offset position) => true;
 
   @override
-  bool hitTest(HitTestResult result, {Offset position}) {
+  bool hitTest(BoxHitTestResult result, {Offset position}) {
     if (size.contains(position)) {
       result.add(BoxHitTestEntry(this, position));
       return true;
