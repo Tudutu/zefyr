@@ -36,6 +36,13 @@ class InputConnectionController implements TextInputClient {
   void openConnection(TextEditingValue value, Brightness keyboardAppearance) {
     if (!hasConnection) {
       _lastKnownRemoteTextEditingValue = value;
+      final composingInvalid =
+          (value.composing.start != -1 || value.composing.end != -1) &&
+              (value.composing.start < 0 ||
+                  value.composing.start >= value.composing.end);
+      if (composingInvalid) {
+        value = value.copyWith(composing: TextRange.empty);
+      }
       _textInputConnection = TextInput.attach(
         this,
         TextInputConfiguration(
@@ -49,7 +56,7 @@ class InputConnectionController implements TextInputClient {
       )..setEditingState(value);
       _sentRemoteValues.add(value);
     }
-    _textInputConnection.show();
+    _textInputConnection?.show();
   }
 
   /// Closes input connection if it's currently open. Otherwise does nothing.
@@ -75,14 +82,22 @@ class InputConnectionController implements TextInputClient {
     // with the last known remote value.
     // It is important to prevent excessive remote updates as it can cause
     // race conditions.
-    final actualValue = value.copyWith(
+    var actualValue = value.copyWith(
       composing: _lastKnownRemoteTextEditingValue.composing,
     );
 
     if (actualValue == _lastKnownRemoteTextEditingValue) return;
 
-    bool shouldRemember = value.text != _lastKnownRemoteTextEditingValue.text;
+    var shouldRemember = value.text != _lastKnownRemoteTextEditingValue.text;
     _lastKnownRemoteTextEditingValue = actualValue;
+
+    final composingInvalid = (actualValue.composing.start != -1 ||
+            actualValue.composing.end != -1) &&
+        (actualValue.composing.start < 0 ||
+            actualValue.composing.start >= actualValue.composing.end);
+    if (composingInvalid) {
+      actualValue = actualValue.copyWith(composing: TextRange.empty);
+    }
     _textInputConnection.setEditingState(actualValue);
     if (shouldRemember) {
       // Only keep track if text changed (selection changes are not relevant)
@@ -192,7 +207,7 @@ class InputConnectionController implements TextInputClient {
   void showAutocorrectionPromptRect(int start, int end) {
     // TODO: implement showAutocorrectionPromptRect
   }
-  
+
   @override
   void performPrivateCommand(String action, Map<String, dynamic> data) {
     // TODO: implement performPrivateCommand
