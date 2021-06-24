@@ -321,7 +321,13 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
   @override
   void userUpdateTextEditingValue(
       TextEditingValue value, SelectionChangedCause cause) {
-    // TODO: implement userUpdateTextEditingValue
+    switch(cause) {
+      case SelectionChangedCause.toolBar:
+        textEditingValue = value;
+        break;
+      default:
+        break;
+    }
   }
 }
 
